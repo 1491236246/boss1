@@ -236,7 +236,7 @@ export default {
   }
 }
 </style>
-<style lang="less">
+<style lang="less" scoped>
   .header {
     background-color:#595e6c;
     height:50px;
