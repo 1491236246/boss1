@@ -2,7 +2,7 @@
   <div class="contenttop">
       <div class="content_title">
         <span><span class="content_border"></span>&nbsp;{{titlename}}</span>
-        <span class="content_refresh">刷新</span>
+        <span class="content_refresh" @click="reload">刷新</span>
       </div>
   </div>
 </template>
@@ -10,6 +10,7 @@
 <script>
 
 export default {
+  inject:['reload'],
   name: 'index',
   props:["titlename"],
   data(){

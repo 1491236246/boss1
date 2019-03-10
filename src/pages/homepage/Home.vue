@@ -76,11 +76,11 @@
         <div class="affair_div">
           <div class="affair_head">运营快捷入口</div>
           <ul class="affair_contul">
-            <li>
+            <li @click="$router.push({name:'basic'})">
               <img src="@/assets/home/u349.png" />
               <p>添加商品</p>
             </li>
-            <li>
+            <li @click="$router.push({name:'orderList'})">
               <img src="@/assets/home/u349.png" />
               <p>订单列表</p>
             </li>
@@ -283,13 +283,10 @@ export default {
       merchantId: JSON.parse(localStorage.getItem("userInfo")).merchantId
     }).then((res) => {
       this.res_data=res;
-      console.log(res);
-
     });
 
     this.$http.post("merchant/merchant_index").then((res) => {
         // this.userData = res
-        console.log(res);
     });
   
   },

@@ -1,6 +1,6 @@
 <template>
-  <div class="Lists global_div">
-    <content-top titlename="商品列表"></content-top>
+  <div class="goodsrectc global_div">
+    <content-top titlename="商品回收站"></content-top>
     <div class="center_div">
       <div class="list_head">
         <div class="div_search">
@@ -39,7 +39,6 @@
         <span>
           <img src="@/assets/list/u28.png">&nbsp;数据列表
         </span>
-        <el-button class="el_left">添加商品</el-button>
       </div>
       <el-table
         ref="multipleTable"
@@ -62,34 +61,19 @@
 
         <el-table-column prop="goodsName" label="商品名称"></el-table-column>
 
-        <el-table-column label="价格/货号">
-          <template slot-scope="scope">
-            <span>价格：{{scope.row.goodsPrice}}</span>
-            <br>
-            <span>货号：{{scope.row.goodsNo}}</span>
-          </template>
-        </el-table-column>
+        <el-table-column label="商品分类" prop="typeName"></el-table-column>
 
-        <el-table-column label="SUK库存">
-          <template slot-scope="scope">
-            <img src="@/assets/list/icon-edit.png" @click="getPageDate(scope.row.id)" alt>
-          </template>
-        </el-table-column>
+        <el-table-column prop="goodsPrice" label="价格"></el-table-column>
 
-        <el-table-column prop="buyNum" label="销量"></el-table-column>
-
-        <el-table-column label="状态">
-          <template slot-scope="scope">{{ scope.row.status == 0 ? '未上架' : '已上架' }}</template>
-        </el-table-column>
+        <el-table-column label="货号" prop="goodsNo"></el-table-column>
 
         <el-table-column prop="address" label="操作">
           <template slot-scope="scope">
             <span
               class="col_span"
-              @click="outGoods(scope.row.id,scope.row.status)"
-            >{{ scope.row.status == 0 ? '上架' : '下架' }}</span>&nbsp;
-            <span class="col_span">编辑</span>&nbsp;
-            <span class="col_span" @click="deleDates(scope.row.id)">删除</span>
+              @click="outGoods(scope.row.id)"
+            >还原</span>&nbsp;
+            <span class="col_span" @click="deleDates([scope.row.id])">删除</span>
           </template>
         </el-table-column>
       </el-table>
@@ -99,6 +83,7 @@
           <el-checkbox v-model="checked" @change="toggleSelection(tableData3)">全选</el-checkbox>&nbsp;
           <el-select v-model="operation" placeholder="批量操作" size="mini">
             <el-option label="删除" value="删除"></el-option>
+            <el-option label="还原" value="还原"></el-option>
           </el-select>&nbsp;
           <el-button size="mini" @click="deleteEre">确定</el-button>
         </div>
@@ -111,41 +96,6 @@
         ></el-pagination>
       </div>
     </div>
-
-    <!-- 编辑弹框 -->
-    <el-dialog title="编辑货品信息" :visible.sync="dialogVisible" width="50%">
-      <span>商品货号</span>
-      <div class="spList_div">
-        <table class="spList_table" v-loading="loadings">
-          <thead>
-            <tr>
-              <td v-for="item in tdHeader" width="80">{{item}}</td>
-              <td>销售价格</td>
-              <td>商品库存</td>
-              <td>库存预警值</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="ite in tdList">
-              <td v-for="items in ite.nameValue">{{items.name}}</td>
-              <td>
-                <el-input v-model="ite.goodsSalePrice" placeholder="请输入内容"></el-input>
-              </td>
-              <td>
-                <el-input v-model="ite.goodsStock" placeholder="请输入内容"></el-input>
-              </td>
-              <td>
-                <el-input v-model="ite.stockWarning" placeholder="请输入内容"></el-input>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="hideModes">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -174,7 +124,6 @@ export default {
       dialogVisible: false,
       tdList: [],
       tdHeader: [],
-      loadings: true
     };
   },
   created() {
@@ -188,31 +137,41 @@ export default {
   },
   methods: {
     deleDates(ids){
-        this.$confirm('确认删除吗?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-        }).then(() => {
-            this.$http.post('merchantGoods/delete_batch',[ids]).then(()=>{
-                this.getStatepage(1);
-                this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                });
-            });
-        }).catch(() => {
-            this.$message({
-                type: 'info',
-                message: '已取消删除'
-            });          
-        });
+        this.$confirm("确认删除吗?").then(() => {
+            this.$http.post('/merchantGoods/delete_batch_recycling',ids).then(() => {
+                this.getList();
+                Message.success("删除成功");
+            }, (err) => {
+                Message.error(err.msg);
+            })
+        })
+    },
+    outGoods(ids){
+        this.$confirm("确认还原吗?").then(() => {
+            this.$http.post('/merchantGoods/merchant_goods_recycling_reduction',{id:ids}).then(() => {
+                this.getStatepage();
+                Message.success("还原成功");
+            })
+        }, (err) => {
+            Message.error(err.msg);
+        })
+    },
+    hyGoods(id){
+        this.$confirm("确认还原吗?").then(() => {
+            this.$http.post("merchantGoods/merchant_goods_batch_reduction", id).then(() => {
+                this.getList();
+                this.$msgSuc("还原成功");
+            })
+        }, (err) => {
+            this.$msgErr(err.msg);
+        })
     },
     dataSearch(){
         if(!this.visibleSearch){
             return false;
         }
         this.loading=true;
-        this.$http.post("merchantGoods/merchant_goods_list_page",{
+        this.$http.post("/merchantGoods/merchant_goods_recycling",{
             currentPage:1,
             goodsName:this.goodsName,
             pageSize:10,
@@ -223,64 +182,15 @@ export default {
             this.loading=false;
         })
     },
-    hideModes(){
-        let statuse=true;
-        this.tdList.forEach((val)=>{
-            if(val.goodsSalePrice=="" || val.goodsStock=="" || val.stockWarning==""){
-                this.$message({
-                    message: '请填写完整信息',
-                    type: 'warning'
-                });
-                statuse=false;
-                return false;
-            }
-        });
-        if(statuse){
-            this.$http.post("merchantGoods/merchant_goods_update_sku",{
-                merchantGoodsTypePropertyList:this.tdList,
-                id:this.goodsId
-            }).then(()=>{
-                this.$message({
-                    message:"操作成功",
-                    type:'success'
-                })
-            },(res)=>{
-                this.$message({
-                    message:res.msg,
-                    type:'error'
-                })
-            })
-            this.dialogVisible=false;
-        }
-        
-    },
-    getPageDate(ids) {
-        this.goodsId=ids;
-        this.dialogVisible = true;
-        this.loadings = true;
-        this.$http.post("merchantGoods/merchant_goods_by_id", {
-          id: ids
-        })
-        .then(res => {
-            this.tdList = res.merchantGoodsTypePropertyList;
-            console.log(this.tdList);
-            this.tdHeader = res.map.map(name => {
-                return name.name;
-            });
-            this.loadings = false;
-        });
-    },
     getStatepage(page) {
-      this.$http
-        .post("merchantGoods/merchant_goods_list_page", {
+      this.$http.post("/merchantGoods/merchant_goods_recycling", {
           currentPage: page,
           pageSize: this.pageSize,
           goodsName: this.goodsName,
           typeId: this.typeId,
           brandId: this.brandId
         })
-        .then(
-          res => {
+        .then(res => {
             this.loading = false;
             this.tableData3 = res.list;
             this.totalCount = res.totalCount;
@@ -289,37 +199,6 @@ export default {
             Message.error(err);
           }
         );
-    },
-    outGoods(ids, sta) {
-      if (sta == 0) {
-        this.$http
-          .post("merchantGoods/merchant_goods_put", {
-            id: ids
-          })
-          .then(
-            res => {
-              Message.success("上架成功");
-              this.getStatepage();
-            },
-            err => {
-              Message.error(err);
-            }
-          );
-      } else {
-        this.$http
-          .post("merchantGoods/merchant_goods_pull", {
-            id: ids
-          })
-          .then(
-            res => {
-              Message.success("下架成功");
-              this.getStatepage();
-            },
-            err => {
-              Message.error(err);
-            }
-          );
-      }
     },
     toggleSelection(rows) {
       if (rows) {
@@ -337,15 +216,11 @@ export default {
         let idlists = this.idList.map(item => {
           return item.id;
         });
-        this.$http.post("merchantGoods/delete_batch", idlists).then(
-          res => {
-            Message.success("删除成功");
-            this.getStatepage(1);
-          },
-          err => {
-            Message.error(err);
-          }
-        );
+        if(this.operation == "还原"){
+            this.hyGoods(idlists);
+        }else{
+            this.deleDates(idlists);
+        }
       }
     },
     handleSelectionChange(val) {
@@ -356,7 +231,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.Lists {
+.goodsrectc {
   .center_div {
     margin-bottom: 20px;
   }

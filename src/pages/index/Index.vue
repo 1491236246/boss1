@@ -2,7 +2,7 @@
   <div class="index">
     <header-top></header-top>
     <left-model/>
-    <router-view/>
+    <router-view v-if="isLoad"></router-view>
   </div>
 </template>
 
@@ -15,13 +15,23 @@ export default {
       HeaderTop,
       LeftModel
   },
+  provide(){
+    return {
+      reload:this.reload
+    }
+  },
   data(){
     return {
-     
+     isLoad:true
     }
   },
   methods: {
-    
+    reload(){
+      this.isLoad=false;
+      this.$nextTick(()=>{
+        this.isLoad=true;
+      })
+    }
   },
 }
 </script>

@@ -2,12 +2,13 @@
   <div class="header">
   <span class="hea_tit">零售</span>
     <el-menu
-      :default-active="activeIndex2"
+      :default-active="pathName.titlePath"
       class="el-menu-demo"
       text-color="#fff"
       mode="horizontal"
+      
       >
-      <el-menu-item v-for="(value,index) in logoList" :index="value.ind" :class="{'el_left':value.ind==8}" @click="increment(value.ind)">{{value.name}}</el-menu-item> 
+      <el-menu-item v-for="(value,index) in logoList" :index="value.path"  @click="increment(value.ind)">{{value.name}}</el-menu-item> 
     </el-menu>
     <div class="hea_information">
       <ul class="head_ico">
@@ -70,33 +71,53 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations,mapState } from 'vuex'
 export default {
   name: 'login',
   data(){
     return {
-      activeIndex2:"1",
       show:1,
       logoList:[
-        {ind:"1",name:"首页"},
-        {ind:"2",name:"商品"},
-        {ind:"3",name:"订单"},
-        {ind:"4",name:"库存"},
-        {ind:"5",name:"用户"},
-        {ind:"6",name:"促销"},
-        {ind:"7",name:"运营"},
-        {ind:"8",name:"统计"},
-        {ind:"9",name:"财务"},
-        {ind:"10",name:"设置"},
-        {ind:"11",name:"权限"},
+        {ind:"1",name:"首页",path:"homes"},
+        {ind:"2",name:"商品",path:"goodslist"},
+        {ind:"3",name:"订单",path:"orderlist"},
+        {ind:"4",name:"促销",path:"prolist"},
+        {ind:"5",name:"库存",path:"stocklist"},
+        {ind:"6",name:"用户",path:"user"},
+        {ind:"7",name:"运营",path:"operate"},
+        {ind:"8",name:"权限",path:"diction"},
       ]
     }
+  },
+  created() {
+   this.getPath();
   },
   methods: {
     ...mapMutations([
       'increment',
     ]),
+    getPath(){
+       let nowPath="";
+        this.logoList.forEach((val,index) => {
+          if(val.path==this.pathName.titlePath){
+            nowPath=val.ind;
+            return false;
+          }
+        });
+        this.increment(nowPath);
+    }
   },
+  computed: {
+    ...mapState([
+        'pathName'
+    ])
+  },
+  // watch: {
+  //   pathName(val){
+  //     console.log(val);
+  //     this.getPath()
+  //   }
+  // },
 }
 </script>
 <style lang="less" scoped >
@@ -119,9 +140,6 @@ export default {
     font-family: '微软雅黑 Bold', '微软雅黑 Regular', '微软雅黑';
     font-weight: 700;
     color:#ffffff;
-  }
-  .el_left{
-    margin-left:50px;
   }
   .hea_information{
     position:absolute;
@@ -168,6 +186,7 @@ export default {
         background:#ffffff;
         color:#999999;
         box-shadow:0px 3px 9px #cccccc;
+        z-index:2;
         div.insu_head{
           width:370px;
           height:45px;
@@ -198,6 +217,7 @@ export default {
         background:#ffffff;
         color:#999999;
         box-shadow:0px 3px 9px #cccccc;
+        z-index:2;
         div.head_div{
           width:350px;
           height:45px;

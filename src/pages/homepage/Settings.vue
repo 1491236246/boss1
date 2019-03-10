@@ -45,6 +45,15 @@
 export default {
   name: 'settings',
   data(){
+    var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (this.ruleForm.twicePassword !== this.ruleForm.newPassword) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
     return {
       avatar: '',
       ruleForm: {
@@ -53,7 +62,21 @@ export default {
         newPassword: '',
         twicePassword: '',
         merchantLogo: ''
-      }
+      },
+      rules: {
+            name: [
+								{ required: true, message: '请输入用户名', trigger: 'blur' },
+							],
+              oldPassword: [
+								{ required: true, message: '请输入旧密码', trigger: 'blur' },
+							],
+							newPassword: [
+								{ required: true, message: '请输入新密码', trigger: 'blur' }
+							],
+            twicePassword: [
+								{ required: true, trigger: 'blur',validator: validatePass2 }
+							]
+						},
     }
   },
   created(){

@@ -58,7 +58,7 @@ export default {
             localStorage.moduleId = 300;
             setTimeout(() => {
                this.statuse="";
-               this.$router.push("/index/home");
+               this.$router.push("/index/homes/home");
             }, 500);
           }, (err) => {
             this.$message({

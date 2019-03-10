@@ -2,17 +2,27 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import Element from 'element-ui'  
+import Element from 'element-ui' 
+import { Message } from 'element-ui' 
 import axios from './config/axios'
+
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
 import ContentTop from '@/components/ContentTop.vue'
 
 Vue.use(Element);  
+Vue.use(VueQuillEditor);
 Vue.component('ContentTop',ContentTop);
 Vue.prototype.$http=axios;
 
 Vue.config.productionTip = false
 
 router.beforeEach((to,from,next)=>{
+  console.log(to);
+  store.commit('changeValue', to.path);
    if (!localStorage.getItem('userInfo')){
     if (to.name == 'login') {
       next();
