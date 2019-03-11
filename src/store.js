@@ -6,7 +6,10 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     indexs:1,
-    pathName:{},
+    pathName:{
+      titlePath:"",
+      leftPath:""
+    },
     userInfo:localStorage.getItem('userInfo') || {},
     active:0,
     categoryName:'',
@@ -44,21 +47,9 @@ export default new Vuex.Store({
       
     },
     changeValue(state,val){
-      
       let pathes=val.split("/");
       state.pathName.titlePath=pathes[2];
       state.pathName.leftPath=pathes[3];
-
-      // let pathName1;
-      // if(val=="/index/goodslist/addgoods/basic"){
-      //   pathName1=val;
-      // }else{
-      //   pathName1="/"+pathes[1]+"/"+pathes[2];
-      // }
-      // state.pathName=pathName1;
-      // console.log(state.pathName);
-
-
     },
     SET_USERINFO(state, userInfo){
       state.userInfo = userInfo;

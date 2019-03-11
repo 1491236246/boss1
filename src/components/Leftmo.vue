@@ -4,7 +4,7 @@
         <div v-for="(val,ind) in value">
             <div class="left_title">{{val.title}}</div>
             <router-link v-for="(v,i) in val.child_list" :to="v.path" tag="span" :key="v.ind">
-                 <div :class="{left_content:true,left_select:pathName.leftPath==getpath(v.path)}" @click="increment(index+1)">{{v.name}}</div>
+                 <div :class="{left_content:true,left_select:pathName.leftPath==getpath(v.path)}" @click="changeValue($route.path)">{{v.name}}</div>
             </router-link>
         </div>       
     </div>

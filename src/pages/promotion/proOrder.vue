@@ -159,7 +159,7 @@ export default {
         id:"",
         status:"",
         currentPage:1,
-        gropuStatus:"",
+        groupStatus:"",
         tableData3:[],
         loading:true,
         groupManageId:"",
