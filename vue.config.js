@@ -2,6 +2,8 @@ const path = require('path')
 const debug = process.env.NODE_ENV !== 'production'
 
 module.exports = {
+    outputDir: 'dist', // 构建输出目录
+    assetsDir: './assets/', // 静态资源目录 (js, css, img, fonts)
     publicPath: '/', // 根域上下文目录
     lintOnSave: false, // 是否开启eslint保存检测，有效值：ture | false | 'error'
     configureWebpack: config => { // webpack配置，值位对象时会合并配置，为方法时会改写配置
