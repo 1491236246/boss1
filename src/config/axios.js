@@ -5,7 +5,7 @@ import router from '../router'
 
 let CONFIG={
     api:process.env.NODE_ENV === 'production' ?
-    'http://47.107.167.164:8080' :
+    'http://106.12.81.206/ls' :
     '/api/'
 }
 
